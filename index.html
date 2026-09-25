@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Missão DiTech · NEI 2026</title>
+<style>
+:root{--bg:#0a1734;--card:#f4f7fb;--ink:#0a1734;--teal:#1aa3ab;--lime:#d8e64c;--pur:#7b3fbf;--mut:#5b6b88}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:#fff;font-family:"Segoe UI",Roboto,Arial,sans-serif}
+body{padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));display:flex;justify-content:center}
+main{width:100%;max-width:640px}
+h1{font-family:"Arial Black","Segoe UI Black",Impact,sans-serif;font-size:clamp(38px,11vw,68px);line-height:.95;margin:.2em 0;letter-spacing:-1px}
+h1 em{font-style:normal;color:var(--teal)}
+h2{font-size:22px;margin:.2em 0 .6em}
+.tag{display:inline-block;background:var(--lime);color:var(--ink);font-weight:800;padding:4px 12px;transform:skewX(-8deg);margin:6px 0 18px}
+.card{background:var(--card);color:var(--ink);border-radius:20px;padding:22px;margin-top:14px}
+.mut{color:var(--mut);font-size:15px}
+label{font-weight:700;display:block;margin:14px 0 6px}
+input[type=text],input[type=email],input[type=number]{width:100%;font-size:22px;padding:14px;border:2px solid #c5d0e2;border-radius:12px;background:#fff;color:var(--ink)}
+input:focus{outline:3px solid var(--teal);border-color:var(--teal)}
+.btn{display:block;width:100%;margin-top:18px;padding:16px;font-size:19px;font-weight:800;border:0;border-radius:14px;background:var(--teal);color:#fff;cursor:pointer}
+.btn:disabled{background:#a9b6cb;cursor:not-allowed}
+.btn.alt{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+.steps{display:flex;gap:6px;margin-bottom:6px}
+.steps i{flex:1;height:8px;border-radius:4px;background:#22335c}
+.steps i.on{background:var(--teal)}.steps i.done{background:var(--lime)}
+.q{font-size:21px;font-weight:700;line-height:1.3;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;font-size:18px;padding:14px 16px;margin:9px 0;border:2px solid #c5d0e2;border-radius:14px;background:#fff;color:var(--ink);cursor:pointer}
+.opt.sel{border-color:var(--teal);background:#e0f4f5;font-weight:700}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px}
+.chk input{width:22px;height:22px;flex:none;margin-top:2px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.mod{background:#fff;border-radius:14px;padding:12px;border:2px solid #dbe3f0}
+.mod b{font-size:26px;color:var(--teal)}
+.big{font-family:"Arial Black",Impact,sans-serif;font-size:72px;line-height:1;color:var(--ink)}
+.prof{font-size:26px;font-weight:800}
+.msg{font-size:14px;margin-top:10px}.ok{color:#0a7d4b}.err{color:#b3261e}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+/* ===== CONFIGURAÇÃO ===== */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNw7Y5F2-gtX61hVSFCliJ6fXFMrvtsbtOYLW5QatyLL6-E4K-CvEdFDAAdVdSJt4_VA/exec"; // cola aqui o URL da Web App do Google Apps Script
+
+/* ===== DADOS (do ficheiro de perguntas) ===== */
+const Q1 = [
+["O que significa «saúde digital»?",["Usar apenas redes sociais","Usar tecnologias para apoiar a saúde","Substituir todos os profissionais de saúde"],1],
+["Qual destes dispositivos pode registar a atividade física?",["Relógio inteligente","Auscultadores comuns","Comando de televisão"],0],
+["Uma aplicação indica que dormiste pouco. O que é mais adequado fazer?",["Aceitar um diagnóstico imediato","Observar se o padrão se repete e procurar aconselhamento se necessário","Ignorar sempre"],1],
+["Antes de instalar uma aplicação de saúde, deves verificar…",["Apenas a cor do ícone","Quem a criou e que dados solicita","Quantos anúncios apresenta"],1],
+["Uma palavra-passe segura deve ser…",["Igual em todas as contas","O teu nome e data de nascimento","Longa, difícil de adivinhar e única"],2],
+["É seguro partilhar numa rede social o resultado de um exame com nome e número de utente visíveis?",["Sim, sempre","Não, são dados pessoais de saúde","Sim, se a fotografia estiver bonita"],1],
+["Se um vídeo promete «curar qualquer doença», o melhor é…",["Seguir imediatamente o conselho","Confirmar a informação em fontes fiáveis","Partilhá-lo sem verificar"],1],
+["Uma teleconsulta pode ser útil para…",["Falar à distância com um profissional de saúde quando apropriado","Realizar qualquer exame físico à distância","Garantir um diagnóstico sem avaliação"],0],
+["Uma ferramenta de inteligência artificial pode ajudar a…",["Acertar sempre","Analisar dados e apoiar decisões, com supervisão humana","Dispensar a verificação dos resultados"],1],
+["Dois relógios apresentam contagens de passos diferentes. O que concluis?",["Um deles está necessariamente avariado","As medições podem variar entre dispositivos","Nenhum mede movimento"],1]];
+const Q2 = [
+["No TUG, uma pessoa fez 7 segundos e outra 11 segundos. Quem recebe mais pontos nesta missão?",["A pessoa que fez 7 segundos","A que fez 11 segundos","Recebem os mesmos"],0],
+["Uma pessoa obteve 30 kgf e outra 50 kgf na preensão. Quem recebe mais pontos nesta escala?",["A de 30 kgf","A de 50 kgf","Recebem os mesmos"],1],
+["A pontuação de preensão, por si só, permite concluir que alguém tem uma doença?",["Sim","Não, é apenas uma medida que precisa de contexto","Apenas se chegar a 25 pontos"],1],
+["A inteligência artificial encontrou uma diferença entre dois grupos. Qual deve ser o próximo passo?",["Anunciar uma causa comprovada","Verificar os dados e considerar outras explicações","Apagar os resultados inesperados"],1],
+["O que é mais responsável ao comunicar os resultados desta missão?",["Publicar nomes e medições individuais","Explicar o que as medidas mostram e proteger os dados pessoais","Dizer que os pontos equivalem a um diagnóstico"],1]];
+
+/* ===== PONTUAÇÃO (igual à folha de cálculo) ===== */
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ptsQuiz1=n=>Math.round(n*25/10);              // 10 × 2,5
+const ptsQuiz2=n=>Math.round(n*25/5);               // 5 × 5
+const ptsGrip=kg=>Math.round(clamp((kg-10)*25/70,0,25));
+const ptsTUG=s=>Math.round(clamp((15-s)*25/13,0,25));
+const profile=t=>t<=40?["Explorador Digital","Estás a dar os primeiros passos na descoberta da relação entre tecnologia e saúde."]:
+  t<=70?["Inovador Digital","Tens boas competências e compreendes como a tecnologia pode apoiar a saúde e o bem-estar."]:
+  ["Cientista Digital","Demonstras elevado conhecimento e curiosidade científica, estando preparado para os desafios da saúde digital do futuro."];
+
+/* ===== ESTADO ===== */
+const S={step:0,code:"",a1:[],a2:[],grip:null,tug:null,qi:0,res:null};
+const $=id=>document.getElementById(id), app=$("app");
+const STEPS=["Código","Quiz","Força","Mobilidade","Cientista","Resultado"];
+const num=v=>parseFloat(String(v).replace(",","."));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function bar(){return `<div class="steps">${STEPS.map((_,i)=>`<i class="${i<S.step?"done":i==S.step?"on":""}"></i>`).join("")}</div><div class="mut" style="color:#9fb0d3">${S.step+1}/6 · ${STEPS[S.step]}</div>`}
+function render(h){app.innerHTML=h;window.scrollTo(0,0)}
+
+/* ===== ECRÃS ===== */
+function welcome(){
+ S.step=0;
+ render(`<h1>Missão<br><em>DiTech</em></h1><div class="tag">CIÊNCIA, TECNOLOGIA E SAÚDE</div>
+ <p style="font-size:20px;margin:0">Quanto vale a tua <b style="color:var(--teal)">Saúde Digital</b>?</p>
+ <div class="card"><label for="code">O teu código de participante</label>
+ <input id="code" type="text" autocomplete="off" autocapitalize="characters" placeholder="Incial 1º e último nome+ano de nascimento. Ex.: NI2026">
+ <label class="chk" style="margin-top:16px"><input id="cons" type="checkbox"><span>Aceito participar e que as minhas respostas e medições sejam registadas para fins do projeto. A pontuação é lúdica e <b>não é um diagnóstico</b>.</span></label>
+ <button class="btn" id="go" disabled>Começar a missão</button></div>`);
+ const chk=()=>$("go").disabled=!($("code").value.trim()&&$("cons").checked);
+ $("code").oninput=chk;$("cons").onchange=chk;
+ $("go").onclick=()=>{S.code=$("code").value.trim().toUpperCase();S.a1=[];S.a2=[];S.grip=S.tug=null;S.qi=0;quiz(1)};
+}
+
+function quiz(n){
+ const Q=n==1?Q1:Q2, A=n==1?S.a1:S.a2, i=S.qi; S.step=n==1?1:4;
+ const [q,opts]=Q[i];
+ render(`${bar()}<div class="card"><div class="mut">${n==1?"Quiz Saúde Digital":"O cientista és tu"} · pergunta ${i+1} de ${Q.length}</div>
+ <div class="q">${esc(q)}</div>
+ ${opts.map((o,k)=>`<button class="opt ${A[i]===k?"sel":""}" data-k="${k}"><b>${"ABC"[k]}.</b> ${esc(o)}</button>`).join("")}
+ <button class="btn" id="nx" ${A[i]===undefined?"disabled":""}>${i<Q.length-1?"Seguinte":"Concluir"}</button>
+ ${i>0?`<button class="btn alt" id="bk" style="margin-top:8px">Anterior</button>`:""}</div>`);
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{A[i]=+b.dataset.k;quiz(n)});
+ $("nx").onclick=()=>{if(i<Q.length-1){S.qi++;quiz(n)}else{S.qi=0;n==1?grip():finish()}};
+ if($("bk"))$("bk").onclick=()=>{S.qi--;quiz(n)};
+}
+
+function measure(step,title,unit,hint,key,min,max,next){
+ S.step=step;
+ render(`${bar()}<div class="card"><h2>${title}</h2><p class="mut">${hint}</p>
+ <label for="v">Valor medido (${unit})</label>
+ <input id="v" type="number" inputmode="decimal" step="0.1" min="${min}" max="${max}" value="${S[key]??""}">
+ <div class="msg err" id="er"></div><button class="btn" id="nx">Guardar e continuar</button></div>`);
+ $("nx").onclick=()=>{const v=num($("v").value);
+  if(!(v>=min&&v<=max)){$("er").textContent=`Introduz um valor entre ${min} e ${max} ${unit}.`;return}
+  S[key]=v;next()};
+}
+const grip=()=>measure(2,"💪 Força muscular","kgf","Dinamómetro de preensão manual. Regista o melhor valor (kgf).","grip",1,120,tug);
+const tug=()=>measure(3,"🚶 Mobilidade em ação","s","Timed Up and Go (TUG). Regista o tempo em segundos.","tug",1,60,()=>{S.qi=0;quiz(2)});
+
+function finish(){
+ S.step=5;
+ const c1=S.a1.filter((a,i)=>a===Q1[i][2]).length, c2=S.a2.filter((a,i)=>a===Q2[i][2]).length;
+ const r={quiz:ptsQuiz1(c1),c1,grip:S.grip,pg:ptsGrip(S.grip),tug:S.tug,pt:ptsTUG(S.tug),fin:ptsQuiz2(c2),c2};
+ r.total=r.quiz+r.pg+r.pt+r.fin; r.perfil=profile(r.total)[0]; S.res=r;
+ queue({type:"resultado",code:S.code,quiz:r.quiz,grip:r.grip,tug:r.tug,fin:r.fin}); flush();
+ const [p,d]=profile(r.total);
+ render(`${bar()}<div class="card" style="text-align:center"><div class="mut">A tua pontuação, ${esc(S.code)}</div>
+ <div class="big">${r.total}<span style="font-size:28px;color:var(--mut)"> / 100</span></div>
+ <div class="prof" style="color:var(--pur)">${p}</div><p>${d}</p>
+ <div class="grid" style="text-align:left">
+  <div class="mod">Quiz saúde digital<br><b>${r.quiz}</b>/25<div class="mut">${c1}/10 certas</div></div>
+  <div class="mod">Força muscular<br><b>${r.pg}</b>/25<div class="mut">${r.grip} kgf</div></div>
+  <div class="mod">Mobilidade (TUG)<br><b>${r.pt}</b>/25<div class="mut">${r.tug} s</div></div>
+  <div class="mod">O cientista és tu<br><b>${r.fin}</b>/25<div class="mut">${c2}/5 certas</div></div></div>
+ <p class="mut">Pontuação lúdica, não é um diagnóstico.</p></div>
+ <div class="card"><label for="em">Queres receber os resultados por email?</label>
+ <input id="em" type="email" inputmode="email" placeholder="o.teu@email.pt">
+ <button class="btn" id="se">Enviar para o meu email</button><div class="msg" id="ms"></div>
+ <p class="mut" style="font-size:12px">O email é usado apenas para este envio e não é guardado na folha de dados.</p></div>
+ <button class="btn alt" id="nw">Novo participante</button>`);
+ $("se").onclick=()=>{const e=$("em").value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(e)){$("ms").className="msg err";$("ms").textContent="Email inválido.";return}
+  queue({type:"email",email:e,code:S.code,...r,perfil:p});flush();
+  $("ms").className="msg ok";$("ms").textContent="Pedido de envio registado. Vais receber o email dentro de instantes.";$("se").disabled=true};
+ $("nw").onclick=welcome;
+}
+
+/* ===== ENVIO (com fila offline) ===== */
+function getQ(){try{return JSON.parse(localStorage.getItem("ditech_q")||"[]")}catch(e){return[]}}
+function setQ(q){try{localStorage.setItem("ditech_q",JSON.stringify(q))}catch(e){}}
+function queue(o){o.id=Date.now()+"-"+Math.random().toString(36).slice(2,7);setQ([...getQ(),o])}
+let busy=false;
+async function flush(){
+ if(busy||!SCRIPT_URL||!navigator.onLine)return; busy=true;
+ try{for(const o of getQ()){
+   await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(o)});
+   setQ(getQ().filter(x=>x.id!==o.id));
+ }}catch(e){}
+ busy=false;
+}
+addEventListener("online",flush); setInterval(flush,30000);
+
+welcome(); flush();
+</script>
+</body>
+</html>
